@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#2a1712">
+<title>Vote — Debatable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="voter">
+<main class="phone">
+  <header class="phone-head">
+    <div class="eyebrow">Debatable 🦃</div>
+    <span id="conn" class="conn">connecting…</span>
+  </header>
+
+  <section id="join" class="card hidden">
+    <h1 class="display">Enter the room code</h1>
+    <p class="muted">It's on the TV under the QR code.</p>
+    <input id="codeIn" class="code-in mono" maxlength="5" autocapitalize="characters" autocomplete="off" placeholder="ABCDE">
+    <button id="joinBtn" class="btn primary big wide">Join</button>
+  </section>
+
+  <section id="wait" class="card hidden">
+    <div class="pulse">🥧</div>
+    <h1 id="waitTitle" class="display">You're in!</h1>
+    <p id="waitText" class="muted">Hang tight — the first question is coming up.</p>
+  </section>
+
+  <section id="ask" class="card hidden">
+    <div id="qmeta" class="eyebrow"></div>
+    <h1 id="qprompt" class="display qprompt-phone"></h1>
+    <div id="phaseMsg" class="phase-msg"></div>
+    <div id="choices" class="choices"></div>
+    <div id="status" class="vstatus"></div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/mqtt@5.16.1/dist/mqtt.min.js"></script>
+<script src="common.js"></script>
+<script src="vote.js"></script>
+</body>
+</html>

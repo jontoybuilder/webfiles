@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Debatable — Thanksgiving Poll</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="host">
+
+<!-- ============ SETUP / EDITOR ============ -->
+<section id="setup" class="screen">
+  <header class="setup-head">
+    <div>
+      <div class="eyebrow">Thanksgiving 2026</div>
+      <h1 class="display">Debatable <span class="accent">Poll</span></h1>
+    </div>
+    <div class="setup-actions">
+      <span id="connBadge1" class="conn">connecting…</span>
+      <button id="startBtn" class="btn primary big">Start the game ▶</button>
+    </div>
+  </header>
+
+  <div class="setup-grid">
+    <div class="panel">
+      <h2>Questions <span id="qCount" class="muted"></span></h2>
+      <p class="muted small">Each question gets two or more answer choices. Leave choices blank to use the defaults on the right. You can rename choices on the TV before opening the vote (click a choice) — handy for putting the debaters' names in.</p>
+      <ol id="qList" class="qlist"></ol>
+      <button id="addQ" class="btn">+ Add a question</button>
+    </div>
+
+    <div class="panel side">
+      <h2>Paste a bunch at once</h2>
+      <p class="muted small">One question per line. Add choices after a <b>|</b><br>
+        <code>Is a hot dog a sandwich? | Yes | No</code><br>
+        <code>Best pie? | Pumpkin | Pecan | Apple</code><br>
+        <code>Stuffing or mashed potatoes?</code> (uses defaults)</p>
+      <textarea id="bulk" rows="7" placeholder="Paste questions here…"></textarea>
+      <button id="bulkAdd" class="btn">Add these</button>
+
+      <h2 class="mt">Default choices</h2>
+      <p class="muted small">Used when a question has no choices of its own. Separate with |</p>
+      <input id="defaults" type="text">
+
+      <h2 class="mt">Room</h2>
+      <p class="small">Room code <b id="roomCode" class="mono"></b> · <button id="newRoom" class="linkbtn">new room</button></p>
+      <p class="small">Relay server
+        <select id="brokerSel"></select>
+      </p>
+      <p class="muted small">If the badge at the top says "offline" for more than a few seconds, switch the relay server (do this before guests scan).</p>
+
+      <h2 class="mt">Backup</h2>
+      <p class="muted small">Questions save in this browser automatically. To move them to the TV's browser, copy them out here and paste them in there.</p>
+      <div class="row">
+        <button id="exportBtn" class="btn">Copy questions</button>
+        <button id="importBtn" class="btn">Paste questions</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE (TV) ============ -->
+<section id="stage" class="screen hidden">
+  <div class="stage-top">
+    <div class="eyebrow"><span id="qNum"></span></div>
+    <div class="top-right">
+      <span id="connBadge2" class="conn">connecting…</span>
+      <button id="editBtn" class="linkbtn" title="Edit questions (E)">edit</button>
+      <button id="fsBtn" class="linkbtn" title="Fullscreen (F)">fullscreen</button>
+    </div>
+  </div>
+
+  <div class="stage-body">
+    <div class="stage-main">
+      <div id="phaseTag" class="phase-tag"></div>
+      <h1 id="prompt" class="prompt display"></h1>
+      <div id="options" class="options"></div>
+      <div id="voteCount" class="vote-count"></div>
+    </div>
+
+    <aside class="stage-qr" id="qrBox">
+      <div class="qr-card">
+        <div id="qr"></div>
+        <div class="qr-label">Scan to vote</div>
+        <div class="qr-sub">Room <b id="roomCode2" class="mono"></b></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="controls">
+    <button id="prevBtn" class="btn ghost">◀ Prev</button>
+    <button id="resetBtn" class="btn ghost">Reset votes</button>
+    <label class="toggle"><input type="checkbox" id="liveToggle"> Live results</label>
+    <button id="mainBtn" class="btn primary big"></button>
+    <button id="nextBtn" class="btn ghost">Next ▶</button>
+  </div>
+  <div class="keys muted">Space = next step · ←/→ = questions · R = reset votes · F = fullscreen · E = edit</div>
+</section>
+
+<section id="end" class="screen hidden end">
+  <div class="eyebrow">That's a wrap</div>
+  <h1 class="display big-title">Happy <span class="accent">Thanksgiving!</span></h1>
+  <p class="muted">Thanks for voting. Pass the pie.</p>
+  <div class="row center"><button id="backBtn" class="btn">◀ Back to last question</button><button id="editBtn2" class="btn">Edit questions</button></div>
+</section>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/mqtt@5.16.1/dist/mqtt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="common.js"></script>
+<script src="host.js"></script>
+</body>
+</html>
