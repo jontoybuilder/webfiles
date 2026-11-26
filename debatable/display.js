@@ -80,8 +80,19 @@
       const stat = row.children[2]; stat.textContent = showBars ? pct + '%' : '';
       if (showBars) stat.appendChild(el('span', 'ocount', ' · ' + counts[i]));
     });
-    $('voteCount').textContent = D.phase === 'ready' ? '' : D.votes + (D.votes === 1 ? ' vote' : ' votes') + (D.phase === 'open' ? ' in' : '');
+    const vc = $('voteCount');
+    vc.textContent = D.phase === 'ready' ? '' : D.votes + (D.votes === 1 ? ' vote' : ' votes') + (D.phase === 'open' ? ' in' : '');
+    if (D.phase === 'open' && D.votes > lastVotes && !fresh) FX.bump(vc);
+    lastVotes = D.votes || 0;
+
+    // celebrate the reveal once per question
+    if (D.phase === 'reveal' && revealedQid !== D.qid) {
+      revealedQid = D.qid;
+      if (total > 0) setTimeout(() => box.querySelectorAll('.opt.winner').forEach(w => { FX.burstAt(w, 40); FX.bump(w); }), 900);
+    }
+    if (D.phase !== 'reveal' && revealedQid === D.qid) revealedQid = null;
   }
+  let lastVotes = 0, revealedQid = null;
 
   if (room) start(); else joinScreen();
 })();

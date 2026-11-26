@@ -6,13 +6,13 @@
 <meta name="theme-color" content="#2a1712">
 <title>Vote — Debatable</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="voter">
 <main class="phone">
   <header class="phone-head">
-    <div class="eyebrow">Debatable 🦃</div>
+    <div class="eyebrow">Debatable</div>
     <span id="conn" class="conn">connecting…</span>
   </header>
 
@@ -24,7 +24,7 @@
   </section>
 
   <section id="wait" class="card hidden">
-    <div class="pulse">🥧</div>
+    <div class="turkeySlot pulse" data-size="130"></div>
     <h1 id="waitTitle" class="display">You're in!</h1>
     <p id="waitText" class="muted">Hang tight — the first question is coming up.</p>
   </section>
@@ -40,6 +40,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/mqtt@5.16.1/dist/mqtt.min.js"></script>
 <script src="common.js"></script>
+<script src="festive.js"></script>
+<script>FX.bunting();FX.leaves(9, 1.2);document.querySelectorAll(".turkeySlot").forEach(n=>n.innerHTML=FX.turkey(+n.dataset.size||120));</script>
 <script src="vote.js"></script>
 </body>
 </html>

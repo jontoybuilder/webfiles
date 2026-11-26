@@ -32,7 +32,9 @@
       if (t === topic(room, 'state')) { state = m; render(); resend(); }
       else if (t === topic(room, 'tally')) {
         if (Array.isArray(m.voters) && typeof m.qid === 'string') {
+          const was = acked[m.qid];
           acked[m.qid] = m.voters.includes(device);
+          if (acked[m.qid] && !was && state && state.qid === m.qid) setTimeout(() => FX.bump($('status')), 30);
           if (state && state.qid === m.qid) renderStatus();
         }
       }
@@ -46,6 +48,8 @@
     acked[state.qid] = false;
     if (navigator.vibrate) navigator.vibrate(30);
     send(); render();
+    const picked = document.querySelector('.choice.picked');
+    FX.burstAt(picked, 16); FX.bump(picked);
   }
   function send() {
     if (!client || !client.connected || !state || state.phase !== 'open') return;
