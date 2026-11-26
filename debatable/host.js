@@ -12,11 +12,17 @@
   const THEMES = [
     ['harvest', 'Harvest plaid'], ['pumpkin', 'Pumpkin patch'], ['cranberry', 'Cranberry'], ['forest', 'Autumn forest'],
     ['twilight', 'Twilight'], ['football', 'Football field'], ['fireplace', 'Cozy fireplace'],
+    ['xmas-red', 'Christmas red'], ['evergreen', 'Evergreen & gold'], ['snowy', 'Snowy night'], ['candycane', 'Candy cane'], ['gingerbread', 'Gingerbread'],
   ];
+  const FALL = THEMES.slice(0, 7), XMAS = THEMES.slice(7);
   const themeOf = q => (q && THEMES.some(t => t[0] === q.theme)) ? q.theme : 'harvest';
   function themeSelect(value, onChange) {
     const sel = el('select', 'theme-sel');
-    THEMES.forEach(([v, n]) => { const o = el('option', null, n); o.value = v; if (v === value) o.selected = true; sel.appendChild(o); });
+    [['Thanksgiving', FALL], ['Christmas', XMAS]].forEach(([label, list]) => {
+      const g = document.createElement('optgroup'); g.label = label;
+      list.forEach(([v, n]) => { const o = el('option', null, n); o.value = v; if (v === value) o.selected = true; g.appendChild(o); });
+      sel.appendChild(g);
+    });
     sel.onchange = () => onChange(sel.value);
     return sel;
   }
@@ -175,7 +181,8 @@
     });
   }
 
-  $('mixThemes').onclick = () => { S.questions.forEach((q, i) => { q.theme = THEMES[i % THEMES.length][0]; }); saveQuestions(); renderSetup(); toast('Every question got a different theme'); };
+  $('mixThemes').onclick = () => { S.questions.forEach((q, i) => { q.theme = FALL[i % FALL.length][0]; }); saveQuestions(); renderSetup(); toast('Every question got a different Thanksgiving theme'); };
+  $('mixXmas').onclick = () => { S.questions.forEach((q, i) => { q.theme = XMAS[i % XMAS.length][0]; }); saveQuestions(); renderSetup(); toast('Every question got a different Christmas theme'); };
   $('sameTheme').onclick = () => { S.questions.forEach(q => { q.theme = 'harvest'; }); saveQuestions(); renderSetup(); toast('All questions back to Harvest plaid'); };
   $('addQ').onclick = () => {
     S.questions.push({ id: rid(8), prompt: '', options: [] }); saveQuestions(); renderSetup();
@@ -210,7 +217,7 @@
   function show(screen) {
     S.screen = screen; save();
     ['setup', 'stage', 'end'].forEach(s => $(s).classList.toggle('hidden', s !== screen));
-    if (screen === 'setup') { renderSetup(); document.body.dataset.theme = 'harvest'; }
+    if (screen === 'setup') { renderSetup(); FX.setTheme('harvest'); }
     if (screen === 'stage') { renderRoom(); renderStage(); keepAwake(); }
     publishState(); publishDisplay(); publishTally();
   }
@@ -230,8 +237,8 @@
     $('qrToggle').checked = !!S.showQR;
     const ts = $('stageTheme'); ts.innerHTML = '';
     ts.appendChild(el('span', null, 'TV theme for this question'));
-    ts.appendChild(themeSelect(themeOf(q), v => { q.theme = v; saveQuestions(); publishState(); publishDisplay(); document.body.dataset.theme = v; }));
-    document.body.dataset.theme = themeOf(q);
+    ts.appendChild(themeSelect(themeOf(q), v => { q.theme = v; saveQuestions(); publishState(); publishDisplay(); FX.setTheme(v); }));
+    FX.setTheme(themeOf(q));
     $('prevBtn').disabled = S.idx === 0;
     $('nextBtn').disabled = S.idx === S.questions.length - 1;
 

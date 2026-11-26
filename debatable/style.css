@@ -381,3 +381,55 @@ body[data-theme=fireplace]::before { content: ''; position: fixed; inset: auto 0
   background: radial-gradient(60% 80% at 50% 100%, #ff8a2c55, transparent 70%); animation: flicker 2.6s ease-in-out infinite; }
 @keyframes flicker { 0%,100% { opacity: .65; } 30% { opacity: 1; } 55% { opacity: .5; } 75% { opacity: .9; } }
 @media (prefers-reduced-motion: reduce) { body[data-theme=fireplace]::before { animation: none; } }
+
+/* ===== Christmas ===== */
+body.xmas .fall, body:not(.xmas) .xmas.fx-leaves, body:not(.xmas) .xmas.fx-harvest, body:not(.xmas) .xmas.fx-bunting { display: none; }
+.fx-leaf .dot { border-radius: 50%; background: #fff; box-shadow: 0 0 6px #ffffffaa; }
+.fx-turkey .hat { display: none; }
+body.xmas .fx-turkey .hat { display: inline; }
+body.xmas { --accent: #e8c15a; --c0: #d62839; --c1: #2f8a50; --c2: #d9a62e; --c3: #3f8fb0; --c4: #8a3ab0; --c5: #b3122a; }
+body.xmas .qr-card { border-color: #d62839; outline-color: #2f7d4a; }
+body.xmas .qr-label { color: #b3122a; }
+body.xmas .eyebrow { color: #ffd98a; }
+body.xmas .btn.primary, body.xmas .phase-tag.open { background: linear-gradient(180deg, #ff5a63, #c81e33); color: #fff; box-shadow: 0 5px 0 #7a0f1d, 0 10px 20px #0005; }
+body.xmas .fx-drum-num { text-shadow: 0 10px 0 #2f7d4a, 0 20px 40px #000a; }
+
+body[data-theme=xmas-red] {
+  background:
+    radial-gradient(circle at 25% 25%, #ffffff22 0 2px, transparent 3px) 0 0 / 70px 70px,
+    radial-gradient(circle at 75% 65%, #ffffff18 0 1.5px, transparent 2.5px) 0 0 / 110px 110px,
+    radial-gradient(1000px 600px at 50% 0%, #ff4a5a55 0%, transparent 60%),
+    linear-gradient(165deg, #a3162b, #6a0a1a 55%, #3a0410);
+  background-attachment: fixed;
+}
+body[data-theme=evergreen] {
+  background:
+    radial-gradient(circle at 30% 40%, #e8c15a40 0 2px, transparent 3px) 0 0 / 80px 80px,
+    radial-gradient(900px 600px at 50% 110%, #e8c15a40 0%, transparent 60%),
+    linear-gradient(170deg, #1f5c36, #123d23 55%, #0a2414);
+  background-attachment: fixed;
+}
+body[data-theme=snowy] {
+  background:
+    radial-gradient(circle at 10% 20%, #fff 0 1px, transparent 2px) 0 0 / 120px 120px,
+    radial-gradient(circle at 60% 60%, #ffffffaa 0 1px, transparent 2px) 0 0 / 170px 170px,
+    radial-gradient(1200px 500px at 50% 120%, #cfe3ff66 0%, transparent 60%),
+    linear-gradient(180deg, #0b1530, #1b2d5a 60%, #3b5488);
+  background-attachment: fixed;
+}
+body[data-theme=candycane] {
+  background:
+    radial-gradient(1000px 600px at 50% 0%, #ffffff22 0%, transparent 60%),
+    repeating-linear-gradient(-45deg, #ffffff16 0 34px, transparent 34px 68px),
+    linear-gradient(165deg, #c41e3a, #8a0f24 60%, #4a0614);
+  background-attachment: fixed;
+}
+body[data-theme=gingerbread] {
+  background:
+    radial-gradient(circle at 50% 50%, #fff4e6 0 3px, transparent 4px) 0 0 / 64px 64px,
+    repeating-linear-gradient(45deg, transparent 0 30px, #fff4e622 30px 33px, transparent 33px 64px),
+    repeating-linear-gradient(-45deg, transparent 0 30px, #fff4e622 30px 33px, transparent 33px 64px),
+    linear-gradient(170deg, #9a5a2c, #6e3b1a 60%, #3f200c);
+  background-attachment: fixed;
+}
+body[data-theme=candycane] .prompt, body[data-theme=gingerbread] .prompt, body[data-theme=xmas-red] .prompt { text-shadow: 0 5px 0 #00000080; }

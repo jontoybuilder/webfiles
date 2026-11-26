@@ -41,7 +41,7 @@
 <script src="https://cdn.jsdelivr.net/npm/mqtt@5.16.1/dist/mqtt.min.js"></script>
 <script src="common.js"></script>
 <script src="festive.js"></script>
-<script>FX.bunting();FX.leaves(9, 1.2);FX.harvest(70);document.querySelectorAll(".turkeySlot").forEach(n=>n.innerHTML=FX.turkey(+n.dataset.size||120));</script>
+<script>FX.decorate({leaves:9,snow:24,scale:1.2,ground:70});document.querySelectorAll(".turkeySlot").forEach(n=>n.innerHTML=FX.turkey(+n.dataset.size||120));</script>
 <script src="vote.js"></script>
 </body>
 </html>

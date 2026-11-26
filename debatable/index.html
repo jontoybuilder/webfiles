@@ -39,7 +39,8 @@
       <ol id="qList" class="qlist"></ol>
       <div class="row">
         <button id="addQ" class="btn">+ Add a question</button>
-        <button id="mixThemes" class="btn">Give each question its own theme</button>
+        <button id="mixThemes" class="btn">Mix Thanksgiving themes</button>
+        <button id="mixXmas" class="btn">Mix Christmas themes</button>
         <button id="sameTheme" class="btn ghost">All Harvest plaid</button>
       </div>
     </div>
@@ -122,7 +123,7 @@
 <script src="https://cdn.jsdelivr.net/npm/mqtt@5.16.1/dist/mqtt.min.js"></script>
 <script src="common.js"></script>
 <script src="festive.js"></script>
-<script>FX.bunting();FX.leaves(8, 1.2);FX.harvest(80);</script>
+<script>FX.decorate({leaves:8,scale:1.2,ground:80});</script>
 <script src="host.js"></script>
 </body>
 </html>
