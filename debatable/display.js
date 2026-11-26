@@ -41,7 +41,7 @@
     if (client) client.end(true);
     client = connect(broker, s => badge($('conn'), s));
     client.on('connect', () => client.subscribe(topic(room, 'display'), { qos: 1 }));
-    client.on('message', (t, buf) => { if (t === topic(room, 'display')) { const m = parse(buf); if (m) { D = m; render(); } } });
+    client.on('message', (t, buf) => { if (t === topic(room, 'display')) { const m = parse(buf); if (m) { if (m.base && DP.followHost(m.base, 'display.html')) return; D = m; render(); } } });
   }
 
   const PHASE_TEXT = { ready: 'Debate!', open: 'Voting is open', reveal: 'The results' };

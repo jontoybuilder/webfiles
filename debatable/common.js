@@ -54,5 +54,16 @@ window.DP = (function () {
     node.textContent = status === 'online' ? 'live' : status === 'connecting' ? 'connecting…' : 'offline';
   }
 
-  return { BROKERS, topic, rid, lsGet, lsSet, connect, parse, el, badge };
+  // where this copy of the app lives; the TV and phones follow the presenter's copy
+  const BASE = location.href.split(/[?#]/)[0].replace(/[^/]*$/, '');
+  function followHost(hostBase, page) {
+    try {
+      const u = new URL(hostBase);
+      if (u.origin !== location.origin || hostBase === BASE || !/\/debatable\/$/.test(u.pathname)) return false;
+      location.replace(hostBase + page);
+      return true;
+    } catch (e) { return false; }
+  }
+
+  return { BROKERS, topic, rid, lsGet, lsSet, connect, parse, el, badge, BASE, followHost };
 })();

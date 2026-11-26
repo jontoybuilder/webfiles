@@ -29,7 +29,7 @@
     client.on('connect', () => client.subscribe([topic(room, 'state'), topic(room, 'tally')], { qos: 1 }));
     client.on('message', (t, buf) => {
       const m = parse(buf); if (!m) return;
-      if (t === topic(room, 'state')) { state = m; render(); resend(); }
+      if (t === topic(room, 'state')) { if (m.base && DP.followHost(m.base, 'vote.html?r=' + room + '&b=' + broker)) return; state = m; render(); resend(); }
       else if (t === topic(room, 'tally')) {
         if (Array.isArray(m.voters) && typeof m.qid === 'string') {
           const was = acked[m.qid];

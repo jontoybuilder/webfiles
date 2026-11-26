@@ -87,16 +87,16 @@
   function publishState() {
     const q = cur();
     let msg;
-    if (S.screen === 'stage' && q) {
-      msg = { phase: S.phase, qid: q.id, n: S.idx + 1, total: S.questions.length, prompt: q.prompt, options: optsFor(q), theme: themeOf(q), ts: Date.now() };
+    if (S.screen === 'stage' && q && !S.intro) {
+      msg = { phase: S.phase, qid: q.id, n: S.idx + 1, total: S.questions.length, prompt: q.prompt, options: optsFor(q), theme: themeOf(q), base: DP.BASE, ts: Date.now() };
       if (S.phase === 'reveal') msg.results = tally(q).counts;
-    } else msg = { phase: S.screen === 'end' ? 'end' : 'lobby', ts: Date.now() };
+    } else msg = { phase: S.screen === 'end' ? 'end' : 'lobby', base: DP.BASE, ts: Date.now() };
     pub('state', msg, true);
   }
   // what the TV shows
   function publishDisplay() {
     const q = cur();
-    const msg = { screen: S.screen === 'stage' && q ? 'stage' : S.screen === 'end' ? 'end' : 'lobby', showQR: !!S.showQR, live: !!S.live, ts: Date.now() };
+    const msg = { screen: S.screen === 'stage' && q && !S.intro ? 'stage' : S.screen === 'end' ? 'end' : 'lobby', showQR: !!S.showQR, live: !!S.live, base: DP.BASE, ts: Date.now() };
     if (msg.screen === 'stage') {
       const t = tally(q);
       Object.assign(msg, { phase: S.phase, qid: q.id, n: S.idx + 1, total: S.questions.length, prompt: q.prompt, options: optsFor(q), theme: themeOf(q), votes: t.total });
@@ -210,6 +210,8 @@
     S.questions = S.questions.filter(q => q.prompt.trim());
     if (!S.questions.length) { toast('Add at least one question first'); renderSetup(); return; }
     if (S.idx >= S.questions.length) S.idx = 0;
+    // a fresh game keeps question 1 hidden on the TV until the presenter shows it
+    S.intro = S.idx === 0 && S.phase === 'ready';
     saveQuestions(); show('stage');
   };
 
@@ -229,10 +231,10 @@
     const q = cur(); if (!q) return;
     const opts = optsFor(q), t = tally(q);
     $('qNum').textContent = 'Question ' + (S.idx + 1) + ' of ' + S.questions.length;
-    $('phaseTag').textContent = PHASE_TEXT[S.phase];
-    $('phaseTag').className = 'phase-tag ' + S.phase;
+    $('phaseTag').textContent = S.intro ? 'TV is on the welcome screen' : PHASE_TEXT[S.phase];
+    $('phaseTag').className = 'phase-tag ' + (S.intro ? 'intro' : S.phase);
     $('prompt').textContent = q.prompt;
-    $('mainBtn').textContent = S.phase === 'reveal' && S.idx === S.questions.length - 1 ? 'Finish ▶' : MAIN_TEXT[S.phase];
+    $('mainBtn').textContent = S.intro ? 'Show question 1 on the TV ▶' : S.phase === 'reveal' && S.idx === S.questions.length - 1 ? 'Finish ▶' : MAIN_TEXT[S.phase];
     $('liveToggle').checked = !!S.live;
     $('qrToggle').checked = !!S.showQR;
     const ts = $('stageTheme'); ts.innerHTML = '';
@@ -262,12 +264,13 @@
       row.append(fill, name, stat);
       box.appendChild(row);
     });
-    $('voteCount').textContent = S.phase === 'ready' ? 'Tap a choice to rename it (e.g. the debaters\' names) before opening the vote.'
+    $('voteCount').textContent = S.intro ? 'Only you can see this question. The TV shows the QR code so guests can join — tap the button when you\'re ready to begin.' : S.phase === 'ready' ? 'Tap a choice to rename it (e.g. the debaters\' names) before opening the vote.'
       : t.total + (t.total === 1 ? ' vote' : ' votes') + (S.phase === 'open' ? ' so far' : '');
   }
 
   const refresh = () => { save(); renderStage(); publishState(); publishDisplay(); publishTally(); };
   function step() {
+    if (S.intro) { S.intro = false; refresh(); return; }
     if (S.phase === 'ready') S.phase = 'open';
     else if (S.phase === 'open') S.phase = 'reveal';
     else return next(true);
@@ -276,7 +279,7 @@
   const phaseFor = q => (S.votes[q.id] && Object.keys(S.votes[q.id]).length) ? 'reveal' : 'ready';
   function next(fromMain) {
     if (S.idx >= S.questions.length - 1) { if (fromMain === true && S.phase === 'reveal') show('end'); return; }
-    S.idx++; S.phase = phaseFor(cur()); refresh();
+    S.intro = false; S.idx++; S.phase = phaseFor(cur()); refresh();
   }
   function prev() { if (S.idx === 0) return; S.idx--; S.phase = phaseFor(cur()); refresh(); }
   async function resetVotes() {
@@ -287,7 +290,7 @@
   async function resetAll() {
     if (!(await ask('Clear the votes for ALL ' + S.questions.length + ' questions and go back to question 1? This can\'t be undone.'))) return;
     S.votes = {}; S.questions.forEach(q => { q.id = rid(8); });
-    S.idx = 0; S.phase = 'ready';
+    S.idx = 0; S.phase = 'ready'; S.intro = true;
     if (S.screen === 'end') show('stage'); else if (S.screen === 'stage') refresh(); else { save(); publishState(); publishDisplay(); publishTally(); }
     toast('All votes cleared');
   }
