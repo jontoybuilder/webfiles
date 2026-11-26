@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Debatable — TV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="host tv">
+
+<section id="join" class="screen hidden tv-join">
+  <div class="card join-card">
+    <div class="eyebrow">TV screen</div>
+    <h1 class="display">Enter the room code</h1>
+    <p class="muted">It's on your presenter device, next to "Room".</p>
+    <input id="codeIn" class="code-in mono" maxlength="5" autocapitalize="characters" autocomplete="off" placeholder="ABCDE">
+    <p class="small muted">Relay server <select id="brokerSel"></select></p>
+    <button id="joinBtn" class="btn primary big wide">Show on this TV</button>
+  </div>
+</section>
+
+<section id="lobby" class="screen hidden tv-lobby">
+  <div class="lobby-text">
+    <div class="eyebrow">Thanksgiving 2026</div>
+    <h1 class="display big-title">Debatable <span class="accent">Poll</span></h1>
+    <p class="lobby-sub">Grab your phone and scan to join.<br>The first question is coming up.</p>
+  </div>
+  <div class="qr-card big-qr"><div class="qrSlot"></div><div class="qr-label">Scan to vote</div><div class="qr-sub">Room <b class="mono roomOut"></b></div></div>
+</section>
+
+<section id="stage" class="screen hidden">
+  <div class="stage-top">
+    <div class="eyebrow"><span id="qNum"></span></div>
+    <span id="conn" class="conn">connecting…</span>
+  </div>
+  <div class="stage-body" id="stageBody">
+    <div class="stage-main">
+      <div id="phaseTag" class="phase-tag"></div>
+      <h1 id="prompt" class="prompt display"></h1>
+      <div id="options" class="options"></div>
+      <div id="voteCount" class="vote-count"></div>
+    </div>
+    <aside class="stage-qr" id="qrBox">
+      <div class="qr-card"><div class="qrSlot"></div><div class="qr-label">Scan to vote</div><div class="qr-sub">Room <b class="mono roomOut"></b></div></div>
+    </aside>
+  </div>
+</section>
+
+<section id="end" class="screen hidden end">
+  <div class="eyebrow">That's a wrap</div>
+  <h1 class="display big-title">Happy <span class="accent">Thanksgiving!</span></h1>
+  <p class="muted lobby-sub">Thanks for voting. Pass the pie.</p>
+</section>
+
+<div class="tv-corner"><button id="fsBtn" class="linkbtn">fullscreen</button> · <button id="leaveBtn" class="linkbtn">change room</button></div>
+
+<script src="https://cdn.jsdelivr.net/npm/mqtt@5.16.1/dist/mqtt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="common.js"></script>
+<script src="display.js"></script>
+</body>
+</html>
