@@ -62,6 +62,8 @@
 
       <h2 class="mt">Room</h2>
       <p class="small">Room code <b class="mono roomCodeOut"></b> · <button id="newRoom" class="linkbtn">new room</button></p>
+      <button id="resetAllBtn2" class="btn small-btn danger-btn">Clear ALL answers</button>
+      <p class="muted small">Wipes every vote on every question and starts again from question 1 (questions stay).</p>
       <p class="small">Relay server
         <select id="brokerSel"></select>
       </p>
@@ -94,7 +96,10 @@
     </div>
     <label class="p-toggle"><input type="checkbox" id="liveToggle"> Show live results on the TV while voting</label>
     <label class="p-toggle"><input type="checkbox" id="qrToggle" checked> Show the QR code on the TV</label>
-    <button id="resetBtn" class="btn ghost small-btn">Reset votes for this question</button>
+    <div class="row two">
+      <button id="resetBtn" class="btn ghost small-btn">Clear this question</button>
+      <button id="resetAllBtn" class="btn ghost small-btn danger-btn">Clear ALL answers</button>
+    </div>
   </div>
   <p class="muted small center">Only you see this screen. Counts here are private until you reveal.</p>
 </section>
@@ -103,7 +108,7 @@
   <div class="eyebrow">That's a wrap</div>
   <h1 class="display big-title">Happy <span class="accent">Thanksgiving!</span></h1>
   <p class="muted">The TV is showing the closing screen.</p>
-  <div class="row center"><button id="backBtn" class="btn">◀ Back to last question</button><button id="editBtn2" class="btn">Edit questions</button></div>
+  <div class="row center"><button id="backBtn" class="btn">◀ Back to last question</button><button id="editBtn2" class="btn">Edit questions</button><button id="resetAllBtn3" class="btn danger-btn">Clear ALL answers & play again</button></div>
 </section>
 
 <div id="modal" class="modal hidden"><div class="modal-card"><p id="modalText"></p><div class="row center"><button id="modalNo" class="btn">Cancel</button><button id="modalYes" class="btn primary">Yes</button></div></div></div>

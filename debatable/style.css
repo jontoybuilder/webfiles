@@ -286,3 +286,6 @@ body.tv #stage { padding-top: max(4vh, 110px); }
 .p-opt .fill { opacity: .55; }
 .p-opt.c0 .fill { background: var(--c0); } .p-opt.c1 .fill { background: var(--c1); } .p-opt.c2 .fill { background: var(--c2); }
 .p-opt.c3 .fill { background: var(--c3); } .p-opt.c4 .fill { background: var(--c4); } .p-opt.c5 .fill { background: var(--c5); }
+.danger-btn { color: #ffb3ab !important; border-color: #c8423b88 !important; }
+.danger-btn:hover { background: #c8423b33 !important; }
+#setup .danger-btn { margin-top: 4px; }

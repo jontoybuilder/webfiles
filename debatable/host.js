@@ -254,7 +254,15 @@
   function prev() { if (S.idx === 0) return; S.idx--; S.phase = phaseFor(cur()); refresh(); }
   async function resetVotes() {
     if (!(await ask('Clear the votes for this question?'))) return;
-    delete S.votes[cur().id]; S.phase = 'ready'; refresh();
+    // a fresh id means phones forget their old pick for this question too
+    const q = cur(); delete S.votes[q.id]; q.id = rid(8); S.phase = 'ready'; save(); refresh();
+  }
+  async function resetAll() {
+    if (!(await ask('Clear the votes for ALL ' + S.questions.length + ' questions and go back to question 1? This can\'t be undone.'))) return;
+    S.votes = {}; S.questions.forEach(q => { q.id = rid(8); });
+    S.idx = 0; S.phase = 'ready';
+    if (S.screen === 'end') show('stage'); else if (S.screen === 'stage') refresh(); else { save(); publishState(); publishDisplay(); publishTally(); }
+    toast('All votes cleared');
   }
 
   let lock = null;
@@ -265,6 +273,9 @@
   $('nextBtn').onclick = () => next(false);
   $('prevBtn').onclick = prev;
   $('resetBtn').onclick = resetVotes;
+  $('resetAllBtn').onclick = resetAll;
+  $('resetAllBtn2').onclick = resetAll;
+  $('resetAllBtn3').onclick = resetAll;
   $('editBtn').onclick = () => show('setup');
   $('editBtn2').onclick = () => show('setup');
   $('backBtn').onclick = () => show('stage');
