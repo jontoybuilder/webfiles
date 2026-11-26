@@ -23,7 +23,7 @@ window.FX = (function () {
           '<path d="M' + (x + step * 0.1) + ' ' + y + ' L' + (x + step * 0.1 + w) + ' ' + y + ' L' + (x + step / 2) + ' ' + (y + h) + ' Z" fill="' + COLORS[i % COLORS.length] + '"/>' +
           '<path d="M' + (x + step * 0.1) + ' ' + y + ' L' + (x + step * 0.1 + w) + ' ' + y + ' L' + (x + step / 2) + ' ' + (y + h * 0.28) + ' Z" fill="#ffffff22"/></g>';
       }
-      host.innerHTML = '<svg width="' + W + '" height="' + (step + sag + 10) + '"><path d="M0 4 Q' + W / 2 + ' ' + (4 + sag * 2) + ' ' + W + ' 4" stroke="#f3dcc0" stroke-width="2" fill="none"/>' + flags + '</svg>';
+      host.innerHTML = '<svg width="' + W + '" height="' + (step + sag + 10) + '"><path d="M0 4 Q' + W / 2 + ' ' + (4 + sag * 2) + ' ' + W + ' 4" stroke="#f3dcc0" stroke-width="2" fill="none"/>' + flags + lights(host, W, sag, n) + '</svg>';
     };
     draw(); let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(draw, 150); });
   }
@@ -83,7 +83,76 @@ window.FX = (function () {
       '<path d="M48 106 v8 M44 114 h8 M72 106 v8 M68 114 h8" stroke="#f2a541" stroke-width="3" stroke-linecap="round"/></svg>';
   }
 
+  // string lights draped along the bunting line
+  function lights(host, W, sag, n) {
+    let s = '';
+    for (let i = 0; i <= n; i++) {
+      const x = (i / n) * W, t = i / n, y = 4 + sag * 4 * t * (1 - t) + 3;
+      s += '<g class="bulb" style="--d:' + ((i * 0.37) % 2).toFixed(2) + 's"><rect x="' + (x - 2.5) + '" y="' + (y - 2) + '" width="5" height="4" rx="1" fill="#5a3a2c"/>' +
+        '<ellipse cx="' + x + '" cy="' + (y + 7) + '" rx="4.5" ry="6.5" fill="' + ['#ffd36b', '#ff8a4c', '#ffe9a8', '#ff6b5b'][i % 4] + '"/></g>';
+    }
+    return s;
+  }
+
+  // pumpkins, gourds, corn and wheat along the bottom edge
+  function harvest(H) {
+    const host = document.createElement('div'); host.className = 'fx-harvest'; host.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(host);
+    const pumpkin = (x, s, c) => {
+      const y = H - 6;
+      return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')">' +
+        '<ellipse cx="0" cy="-26" rx="34" ry="27" fill="' + c + '"/>' +
+        '<ellipse cx="-14" cy="-26" rx="17" ry="26" fill="#00000018"/><ellipse cx="14" cy="-26" rx="17" ry="26" fill="#00000018"/>' +
+        '<ellipse cx="0" cy="-26" rx="11" ry="27" fill="#ffffff1c"/>' +
+        '<path d="M-2 -50 q2 -12 9 -14 l2 4 q-6 3 -6 11z" fill="#5d7a2e"/>' +
+        '<path d="M5 -58 q14 -6 18 4 q-10 -4 -16 0z" fill="#8a9a3b"/></g>';
+    };
+    const corn = (x, s) => '<g transform="translate(' + x + ' ' + (H - 6) + ') scale(' + s + ') rotate(-12)">' +
+      '<ellipse cx="0" cy="-34" rx="11" ry="32" fill="#f2c14e"/>' +
+      Array.from({ length: 5 }, (_, r) => Array.from({ length: 3 }, (_, k) => '<circle cx="' + (-5 + k * 5) + '" cy="' + (-56 + r * 10) + '" r="2.2" fill="#d99a26"/>').join('')).join('') +
+      '<path d="M-2 0 q-22 -20 -12 -58 q4 30 14 52z" fill="#7c8f35"/><path d="M2 0 q22 -22 10 -56 q-2 30 -12 50z" fill="#93a744"/></g>';
+    const wheat = (x, s) => '<g transform="translate(' + x + ' ' + (H - 6) + ') scale(' + s + ')" stroke="#d9a62e" stroke-width="2" fill="#e8b84a">' +
+      [-14, 0, 14].map(a => '<g transform="rotate(' + a + ')"><line x1="0" y1="0" x2="0" y2="-70" />' +
+        Array.from({ length: 6 }, (_, k) => '<ellipse cx="-3.5" cy="' + (-70 + k * 6) + '" rx="2.6" ry="5" transform="rotate(-25 -3.5 ' + (-70 + k * 6) + ')" stroke="none"/><ellipse cx="3.5" cy="' + (-70 + k * 6) + '" rx="2.6" ry="5" transform="rotate(25 3.5 ' + (-70 + k * 6) + ')" stroke="none"/>').join('') + '</g>').join('') + '</g>';
+    const gourd = (x, s) => '<g transform="translate(' + x + ' ' + (H - 6) + ') scale(' + s + ')"><ellipse cx="0" cy="-14" rx="16" ry="14" fill="#d9a62e"/><ellipse cx="6" cy="-30" rx="8" ry="11" fill="#8a9a3b"/><path d="M8 -40 l3 -7" stroke="#5d4a2a" stroke-width="3" stroke-linecap="round"/></g>';
+    const draw = () => {
+      const W = window.innerWidth; let x = 10, i = 0, items = '';
+      const pc = ['#e0703a', '#d9662c', '#f08a2c', '#e8a34a'];
+      while (x < W + 40) {
+        const k = i % 6, sc = (H / 150) * (0.75 + ((i * 37) % 10) / 25);
+        if (k === 0 || k === 3) items += pumpkin(x, sc * 1.1, pc[i % pc.length]);
+        else if (k === 1) items += wheat(x, sc);
+        else if (k === 2) items += gourd(x, sc);
+        else if (k === 4) items += corn(x, sc);
+        else items += pumpkin(x, sc * 0.75, '#efe3c8');
+        x += (k === 1 ? 46 : 70) * (H / 150) + ((i * 13) % 20); i++;
+      }
+      host.innerHTML = '<svg width="' + W + '" height="' + H + '"><defs><linearGradient id="hay" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a5a2a"/><stop offset="1" stop-color="#4a2a14"/></linearGradient></defs>' +
+        items + '<rect x="0" y="' + (H - 8) + '" width="' + W + '" height="8" fill="url(#hay)"/></svg>';
+    };
+    draw(); let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(draw, 150); });
+  }
+
+  // "And the winner is… 3 2 1" overlay; resolves when done
+  function drumroll() {
+    return new Promise(res => {
+      if (reduce) return res();
+      const o = document.createElement('div'); o.className = 'fx-drum';
+      o.innerHTML = '<div class="fx-drum-inner"><div class="fx-drum-title">And the winner is…</div><div class="fx-drum-num"></div></div>';
+      document.body.appendChild(o);
+      const num = o.querySelector('.fx-drum-num');
+      let n = 3;
+      const tick = () => {
+        if (n === 0) { o.classList.add('out'); setTimeout(() => { o.remove(); res(); }, 250); return; }
+        num.textContent = n; num.classList.remove('pop'); void num.offsetWidth; num.classList.add('pop'); n--; setTimeout(tick, 650);
+      };
+      setTimeout(tick, 350);
+    });
+  }
+
+  function hop(elm) { if (!elm || reduce) return; elm.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-38px) rotate(-6deg)' }, { transform: 'translateY(0)' }, { transform: 'translateY(-22px) rotate(5deg)' }, { transform: 'translateY(0)' }], { duration: 1100, easing: 'ease-out' }); }
+
   function bump(elm) { if (!elm || reduce) return; elm.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], { duration: 380, easing: 'ease-out' }); }
 
-  return { bunting, leaves, burst, burstAt, turkey, bump, leafSVG };
+  return { bunting, leaves, burst, burstAt, turkey, bump, leafSVG, harvest, drumroll, hop };
 })();

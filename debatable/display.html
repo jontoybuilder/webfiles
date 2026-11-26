@@ -56,13 +56,14 @@
   <p class="muted lobby-sub">Thanks for voting. Pass the pie.</p>
 </section>
 
+<div class="turkeySlot stage-turkey" data-size="150"></div>
 <div class="tv-corner"><button id="fsBtn" class="linkbtn">fullscreen</button> · <button id="leaveBtn" class="linkbtn">change room</button></div>
 
 <script src="https://cdn.jsdelivr.net/npm/mqtt@5.16.1/dist/mqtt.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="common.js"></script>
 <script src="festive.js"></script>
-<script>FX.bunting();FX.leaves(20, 1.9);document.querySelectorAll(".turkeySlot").forEach(n=>n.innerHTML=FX.turkey(+n.dataset.size||200));</script>
+<script>FX.bunting();FX.leaves(26, 1.9);FX.harvest(150);document.querySelectorAll(".turkeySlot").forEach(n=>n.innerHTML=FX.turkey(+n.dataset.size||200));</script>
 <script src="display.js"></script>
 </body>
 </html>

@@ -52,12 +52,27 @@
     $('qrBox').classList.toggle('hidden', !D.showQR);
     $('stageBody').classList.toggle('noqr', !D.showQR);
     $('qNum').textContent = 'Question ' + D.n + ' of ' + D.total;
-    $('phaseTag').textContent = PHASE_TEXT[D.phase] || '';
+    $('phaseTag').textContent = holding ? 'Drumroll…' : (PHASE_TEXT[D.phase] || '');
     $('phaseTag').className = 'phase-tag ' + D.phase;
     $('prompt').textContent = D.prompt;
     document.body.dataset.phase = D.phase;
 
-    const showBars = Array.isArray(D.counts) && (D.phase === 'reveal' || (D.live && D.phase === 'open'));
+    // drumroll before a live reveal (not when the TV just loads onto an old result)
+    if (D.phase === 'reveal' && revealedQid !== D.qid) {
+      revealedQid = D.qid;
+      if (prevPhase === 'open' && prevQid === D.qid && Array.isArray(D.counts) && D.counts.some(c => c > 0)) {
+        holding = true;
+        FX.drumroll().then(() => {
+          holding = false; render();
+          setTimeout(() => { $('options').querySelectorAll('.opt.winner').forEach(w => { FX.burstAt(w, 46); FX.bump(w); }); FX.hop(document.querySelector('.stage-turkey')); }, 700);
+        });
+      }
+    }
+    if (D.phase !== 'reveal' && revealedQid === D.qid) revealedQid = null;
+    prevPhase = D.phase; prevQid = D.qid;
+    if (holding) $('phaseTag').textContent = 'Drumroll…';
+
+    const showBars = !holding && Array.isArray(D.counts) && (D.phase === 'reveal' || (D.live && D.phase === 'open'));
     const counts = showBars ? D.counts : [];
     const total = counts.reduce((a, b) => a + b, 0);
     const max = Math.max(...counts, 0);
@@ -74,7 +89,7 @@
         box.appendChild(row);
       }
       const pct = total ? Math.round(100 * counts[i] / total) : 0;
-      row.classList.toggle('winner', D.phase === 'reveal' && total > 0 && counts[i] === max);
+      row.classList.toggle('winner', showBars && D.phase === 'reveal' && total > 0 && counts[i] === max);
       row.children[1].textContent = label;
       row.children[0].style.width = showBars ? pct + '%' : '0%';
       const stat = row.children[2]; stat.textContent = showBars ? pct + '%' : '';
@@ -84,15 +99,8 @@
     vc.textContent = D.phase === 'ready' ? '' : D.votes + (D.votes === 1 ? ' vote' : ' votes') + (D.phase === 'open' ? ' in' : '');
     if (D.phase === 'open' && D.votes > lastVotes && !fresh) FX.bump(vc);
     lastVotes = D.votes || 0;
-
-    // celebrate the reveal once per question
-    if (D.phase === 'reveal' && revealedQid !== D.qid) {
-      revealedQid = D.qid;
-      if (total > 0) setTimeout(() => box.querySelectorAll('.opt.winner').forEach(w => { FX.burstAt(w, 40); FX.bump(w); }), 900);
-    }
-    if (D.phase !== 'reveal' && revealedQid === D.qid) revealedQid = null;
   }
-  let lastVotes = 0, revealedQid = null;
+  let lastVotes = 0, revealedQid = null, holding = false, prevPhase = null, prevQid = null;
 
   if (room) start(); else joinScreen();
 })();

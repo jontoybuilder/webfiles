@@ -289,3 +289,36 @@ body.tv #stage { padding-top: max(4vh, 110px); }
 .danger-btn { color: #ffb3ab !important; border-color: #c8423b88 !important; }
 .danger-btn:hover { background: #c8423b33 !important; }
 #setup .danger-btn { margin-top: 4px; }
+
+/* ===== more festive ===== */
+body {
+  background:
+    radial-gradient(900px 520px at 12% 0%, #8a3a16aa 0%, transparent 65%),
+    radial-gradient(800px 600px at 100% 100%, #6a2414aa 0%, transparent 60%),
+    repeating-linear-gradient(90deg, #c8423b14 0 26px, transparent 26px 34px, #f2a5410d 34px 40px, transparent 40px 92px),
+    repeating-linear-gradient(0deg, #c8423b12 0 26px, transparent 26px 34px, #f2a5410b 34px 40px, transparent 40px 92px),
+    linear-gradient(160deg, #3d1a0f, #1f0d08 70%);
+  background-attachment: fixed;
+}
+.fx-bunting .bulb ellipse { filter: drop-shadow(0 0 6px currentColor); animation: twinkle 1.8s ease-in-out infinite; animation-delay: var(--d); }
+@keyframes twinkle { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+.fx-harvest { position: fixed; left: 0; right: 0; bottom: 0; z-index: 2; pointer-events: none; filter: drop-shadow(0 -4px 10px #0006); }
+.fx-harvest svg { display: block; }
+.stage-turkey { position: fixed; left: calc(50% - 75px); bottom: 118px; z-index: 2; display: none; pointer-events: none; }
+body.tv:has(#stage:not(.hidden)) .stage-turkey { display: block; }
+body.tv #stage, .tv-lobby, .end { padding-bottom: 170px; }
+body.tv .tv-corner { bottom: auto; top: 160px; }
+#setup { padding-bottom: 110px; }
+.presenter { padding-bottom: 110px; }
+.phone { padding-bottom: 100px; }
+.fx-drum { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; background: radial-gradient(circle, #2a1007e6, #120604f2); animation: fadein .25s ease-out; }
+.fx-drum.out { opacity: 0; transition: opacity .25s; }
+.fx-drum-inner { text-align: center; }
+.fx-drum-title { font-family: 'Lilita One', sans-serif; font-size: clamp(40px, 6vw, 120px); color: #ffd36b; text-shadow: 0 6px 0 #0008; }
+.fx-drum-num { font-family: 'Lilita One', sans-serif; font-size: clamp(120px, 22vw, 420px); line-height: 1; color: #fff8ef; text-shadow: 0 10px 0 #c8423b, 0 20px 40px #000a; }
+.fx-drum-num.pop { animation: pop .6s cubic-bezier(.2,1.6,.4,1); }
+@keyframes pop { from { transform: scale(.3) rotate(-12deg); opacity: 0; } 60% { opacity: 1; } to { transform: scale(1) rotate(0); } }
+@keyframes fadein { from { opacity: 0; } }
+.prompt { color: #fff8ef; }
+.lobby-text .big-title { text-shadow: 0 6px 0 #c8423b, 0 12px 30px #0008; }
+.end .big-title { text-shadow: 0 6px 0 #c8423b, 0 12px 30px #0008; }
