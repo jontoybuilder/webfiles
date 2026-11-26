@@ -37,7 +37,11 @@
       <h2>Questions <span id="qCount" class="muted"></span></h2>
       <p class="muted small">Each question gets two or more answer choices. Leave choices blank to use the defaults on the right.</p>
       <ol id="qList" class="qlist"></ol>
-      <button id="addQ" class="btn">+ Add a question</button>
+      <div class="row">
+        <button id="addQ" class="btn">+ Add a question</button>
+        <button id="mixThemes" class="btn">Give each question its own theme</button>
+        <button id="sameTheme" class="btn ghost">All Harvest plaid</button>
+      </div>
     </div>
 
     <div class="panel side">
@@ -94,6 +98,7 @@
       <button id="prevBtn" class="btn">◀ Prev</button>
       <button id="nextBtn" class="btn">Next ▶</button>
     </div>
+    <label class="p-theme" id="stageTheme"></label>
     <label class="p-toggle"><input type="checkbox" id="liveToggle"> Show live results on the TV while voting</label>
     <label class="p-toggle"><input type="checkbox" id="qrToggle" checked> Show the QR code on the TV</label>
     <div class="row two">

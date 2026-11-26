@@ -322,3 +322,62 @@ body.tv .tv-corner { top: auto; bottom: 158px; right: 2vw; z-index: 6; opacity: 
 .prompt { color: #fff8ef; }
 .lobby-text .big-title { text-shadow: 0 6px 0 #c8423b, 0 12px 30px #0008; }
 .end .big-title { text-shadow: 0 6px 0 #c8423b, 0 12px 30px #0008; }
+
+/* ===== per-question themes ===== */
+.qtheme { display: flex; align-items: center; gap: 8px; }
+.theme-sel { font: 600 14px Nunito, sans-serif; color: var(--text); background: #00000040; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+.p-theme { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 15px; min-height: 44px; }
+.p-theme .theme-sel { font-size: 15px; padding: 8px 10px; }
+
+body[data-theme=pumpkin] {
+  background:
+    radial-gradient(1000px 600px at 50% 120%, #ff9a3c99 0%, transparent 60%),
+    radial-gradient(700px 500px at 0% 0%, #ffb35c55 0%, transparent 60%),
+    repeating-linear-gradient(90deg, #00000014 0 3px, transparent 3px 120px),
+    linear-gradient(165deg, #b4511a, #6a2808 55%, #3a1404);
+  background-attachment: fixed;
+}
+body[data-theme=cranberry] {
+  background:
+    radial-gradient(900px 500px at 85% 0%, #ff5a6a44 0%, transparent 60%),
+    radial-gradient(circle at 20% 80%, #ffd36b1f 0 2px, transparent 3px) 0 0 / 60px 60px,
+    radial-gradient(circle at 70% 30%, #ffd36b18 0 2px, transparent 3px) 0 0 / 90px 90px,
+    linear-gradient(160deg, #7a1428, #3a0714 60%, #1e030a);
+  background-attachment: fixed;
+}
+body[data-theme=forest] {
+  background:
+    radial-gradient(800px 500px at 15% 10%, #e8b84a33 0%, transparent 60%),
+    repeating-linear-gradient(100deg, #0000001f 0 18px, transparent 18px 70px),
+    linear-gradient(170deg, #3f5a2a, #1f3216 55%, #0f1a0b);
+  background-attachment: fixed;
+}
+body[data-theme=twilight] {
+  background:
+    radial-gradient(circle at 10% 20%, #fff 0 1px, transparent 2px) 0 0 / 140px 140px,
+    radial-gradient(circle at 60% 70%, #ffffffaa 0 1px, transparent 2px) 0 0 / 200px 200px,
+    radial-gradient(1100px 500px at 50% 115%, #f08a2c88 0%, transparent 60%),
+    linear-gradient(180deg, #1c1440, #3a1f52 55%, #6a2a48);
+  background-attachment: fixed;
+}
+body[data-theme=football] {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 calc(10vw - 3px), #ffffff55 calc(10vw - 3px) 10vw),
+    repeating-linear-gradient(90deg, #ffffff0d 0 10vw, transparent 10vw 20vw),
+    radial-gradient(1200px 600px at 50% 0%, #ffffff22 0%, transparent 60%),
+    linear-gradient(180deg, #3f8a3a, #24602a 60%, #17451c);
+  background-attachment: fixed;
+}
+body[data-theme=football] .prompt, body[data-theme=football] .p-prompt { text-shadow: 0 5px 0 #0b2a0f; }
+body[data-theme=fireplace] {
+  background:
+    radial-gradient(1300px 620px at 50% 115%, #ffb347ee 0%, #ff6a1aaa 30%, transparent 68%),
+    repeating-linear-gradient(0deg, #00000026 0 2px, transparent 2px 44px),
+    repeating-linear-gradient(90deg, #00000026 0 2px, transparent 2px 96px),
+    linear-gradient(180deg, #120807, #2a110a 60%, #4a1c0c);
+  background-attachment: fixed;
+}
+body[data-theme=fireplace]::before { content: ''; position: fixed; inset: auto 0 0 0; height: 55vh; z-index: 0; pointer-events: none;
+  background: radial-gradient(60% 80% at 50% 100%, #ff8a2c55, transparent 70%); animation: flicker 2.6s ease-in-out infinite; }
+@keyframes flicker { 0%,100% { opacity: .65; } 30% { opacity: 1; } 55% { opacity: .5; } 75% { opacity: .9; } }
+@media (prefers-reduced-motion: reduce) { body[data-theme=fireplace]::before { animation: none; } }

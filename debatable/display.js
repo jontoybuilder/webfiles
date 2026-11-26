@@ -46,6 +46,7 @@
 
   const PHASE_TEXT = { ready: 'Debate!', open: 'Voting is open', reveal: 'The results' };
   function render() {
+    document.body.dataset.theme = (D && D.screen === 'stage' && D.theme) || 'harvest';
     if (!D || D.screen === 'lobby') return showOnly('lobby');
     if (D.screen === 'end') return showOnly('end');
     showOnly('stage');

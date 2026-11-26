@@ -9,6 +9,18 @@
     { prompt: 'Stuffing or mashed potatoes?', options: ['Stuffing', 'Mashed potatoes'] },
   ];
 
+  const THEMES = [
+    ['harvest', 'Harvest plaid'], ['pumpkin', 'Pumpkin patch'], ['cranberry', 'Cranberry'], ['forest', 'Autumn forest'],
+    ['twilight', 'Twilight'], ['football', 'Football field'], ['fireplace', 'Cozy fireplace'],
+  ];
+  const themeOf = q => (q && THEMES.some(t => t[0] === q.theme)) ? q.theme : 'harvest';
+  function themeSelect(value, onChange) {
+    const sel = el('select', 'theme-sel');
+    THEMES.forEach(([v, n]) => { const o = el('option', null, n); o.value = v; if (v === value) o.selected = true; sel.appendChild(o); });
+    sel.onchange = () => onChange(sel.value);
+    return sel;
+  }
+
   let S = lsGet(KEY, null);
   if (!S) {
     S = {
@@ -70,7 +82,7 @@
     const q = cur();
     let msg;
     if (S.screen === 'stage' && q) {
-      msg = { phase: S.phase, qid: q.id, n: S.idx + 1, total: S.questions.length, prompt: q.prompt, options: optsFor(q), ts: Date.now() };
+      msg = { phase: S.phase, qid: q.id, n: S.idx + 1, total: S.questions.length, prompt: q.prompt, options: optsFor(q), theme: themeOf(q), ts: Date.now() };
       if (S.phase === 'reveal') msg.results = tally(q).counts;
     } else msg = { phase: S.screen === 'end' ? 'end' : 'lobby', ts: Date.now() };
     pub('state', msg, true);
@@ -81,7 +93,7 @@
     const msg = { screen: S.screen === 'stage' && q ? 'stage' : S.screen === 'end' ? 'end' : 'lobby', showQR: !!S.showQR, live: !!S.live, ts: Date.now() };
     if (msg.screen === 'stage') {
       const t = tally(q);
-      Object.assign(msg, { phase: S.phase, qid: q.id, n: S.idx + 1, total: S.questions.length, prompt: q.prompt, options: optsFor(q), votes: t.total });
+      Object.assign(msg, { phase: S.phase, qid: q.id, n: S.idx + 1, total: S.questions.length, prompt: q.prompt, options: optsFor(q), theme: themeOf(q), votes: t.total });
       if (S.phase === 'reveal' || S.live) msg.counts = t.counts;
     }
     pub('display', msg, true);
@@ -91,7 +103,7 @@
     const t = tally(q);
     pub('tally', { qid: q.id, total: t.total, voters: t.voters }, false);
   }
-  function publishQuestions() { pub('questions', { defaults: S.defaults, questions: S.questions.map(q => ({ prompt: q.prompt, options: q.options })) }, true); }
+  function publishQuestions() { pub('questions', { defaults: S.defaults, questions: S.questions.map(q => ({ prompt: q.prompt, options: q.options, theme: q.theme })) }, true); }
   function publishAll() { publishState(); publishDisplay(); publishTally(); publishQuestions(); }
 
   let dT = null, tT = null, qT = null;
@@ -120,7 +132,7 @@
     if (!d || !Array.isArray(d.questions) || !d.questions.length) return toast('Room ' + code + ' has no questions');
     const ok = await ask('Replace the ' + S.questions.length + ' questions here with the ' + d.questions.length + ' from room ' + code + '?');
     if (!ok) return;
-    S.questions = d.questions.map(q => ({ id: rid(8), prompt: String(q.prompt || ''), options: Array.isArray(q.options) ? q.options.map(String).slice(0, 6) : [] }));
+    S.questions = d.questions.map(q => ({ id: rid(8), prompt: String(q.prompt || ''), options: Array.isArray(q.options) ? q.options.map(String).slice(0, 6) : [], theme: typeof q.theme === 'string' ? q.theme : 'harvest' }));
     if (Array.isArray(d.defaults) && d.defaults.length >= 2) S.defaults = d.defaults.map(String);
     S.idx = 0; S.phase = 'ready'; S.votes = {}; saveQuestions(); renderSetup(); $('pullCode').value = '';
     toast('Copied ' + S.questions.length + ' questions');
@@ -144,7 +156,9 @@
       const o = el('input'); o.type = 'text'; o.value = (q.options || []).join(' | '); o.className = 'qopts';
       o.placeholder = 'Choices, e.g. Yes | No   (blank = ' + S.defaults.join(' | ') + ')';
       o.addEventListener('input', () => { q.options = o.value.split('|').map(s => s.trim()).filter(Boolean).slice(0, 6); saveQuestions(); });
-      body.append(p, o);
+      const th = el('label', 'qtheme'); th.append(el('span', 'muted small', 'Theme'));
+      th.appendChild(themeSelect(themeOf(q), v => { q.theme = v; saveQuestions(); }));
+      body.append(p, o, th);
       const tools = el('div', 'qtools');
       const up = el('button', 'icon', '↑'); up.title = 'Move up'; up.disabled = i === 0;
       up.onclick = () => { S.questions.splice(i - 1, 0, S.questions.splice(i, 1)[0]); saveQuestions(); renderSetup(); };
@@ -161,6 +175,8 @@
     });
   }
 
+  $('mixThemes').onclick = () => { S.questions.forEach((q, i) => { q.theme = THEMES[i % THEMES.length][0]; }); saveQuestions(); renderSetup(); toast('Every question got a different theme'); };
+  $('sameTheme').onclick = () => { S.questions.forEach(q => { q.theme = 'harvest'; }); saveQuestions(); renderSetup(); toast('All questions back to Harvest plaid'); };
   $('addQ').onclick = () => {
     S.questions.push({ id: rid(8), prompt: '', options: [] }); saveQuestions(); renderSetup();
     const inputs = document.querySelectorAll('.qprompt'); inputs[inputs.length - 1].focus();
@@ -194,7 +210,7 @@
   function show(screen) {
     S.screen = screen; save();
     ['setup', 'stage', 'end'].forEach(s => $(s).classList.toggle('hidden', s !== screen));
-    if (screen === 'setup') renderSetup();
+    if (screen === 'setup') { renderSetup(); document.body.dataset.theme = 'harvest'; }
     if (screen === 'stage') { renderRoom(); renderStage(); keepAwake(); }
     publishState(); publishDisplay(); publishTally();
   }
@@ -212,6 +228,10 @@
     $('mainBtn').textContent = S.phase === 'reveal' && S.idx === S.questions.length - 1 ? 'Finish ▶' : MAIN_TEXT[S.phase];
     $('liveToggle').checked = !!S.live;
     $('qrToggle').checked = !!S.showQR;
+    const ts = $('stageTheme'); ts.innerHTML = '';
+    ts.appendChild(el('span', null, 'TV theme for this question'));
+    ts.appendChild(themeSelect(themeOf(q), v => { q.theme = v; saveQuestions(); publishState(); publishDisplay(); document.body.dataset.theme = v; }));
+    document.body.dataset.theme = themeOf(q);
     $('prevBtn').disabled = S.idx === 0;
     $('nextBtn').disabled = S.idx === S.questions.length - 1;
 

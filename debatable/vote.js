@@ -61,6 +61,7 @@
 
   function render() {
     const s = state;
+    document.body.dataset.theme = (s && s.theme) || 'harvest';
     if (!s || s.phase === 'lobby') {
       showOnly('wait'); $('waitTitle').textContent = "You're in!";
       $('waitText').textContent = 'Hang tight — the first question is coming up.'; return;
